@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#783fb5</color>
+    <color name="colorPrimaryDark">#5e309f</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="chest">#FFFF00</color>
+    <color name="biceps">#68EFAD</color>
+    <color name="triceps">#FF4081</color>
+    <color name="back">#B39DDB</color>
+
+</resources>
