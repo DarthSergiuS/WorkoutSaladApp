@@ -1,55 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
+    android:id="@+id/cont_item_root"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:layout_margin="5dp"
-    android:clickable="true"
-    android:foreground="?selectableItemBackground"
-    card_view:cardBackgroundColor="#68EFAD"
-    card_view:cardCornerRadius="12dp"
-    card_view:cardElevation="3dp"
-    card_view:contentPadding="4dp">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <RelativeLayout
-        android:id="@+id/cont_item_root"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        card_view:cardCornerRadius="4dp">
 
-        <ImageView
-            android:id="@+id/img_item_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingLeft="16dp"
-            android:src="@android:drawable/ic_menu_edit"/>
-
-        <TextView
-            android:id="@+id/lbl_item_text"
+        <RelativeLayout
+            android:id="@+id/cont_card_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/img_item_icon"
-            android:layout_marginLeft="72dp"
-            android:layout_marginRight="48dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:text="Sois comme l'eau mon ami"
+            android:background="#FFFFFF">
 
-            android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/img_item_icon"
+                android:layout_width="match_parent"
+                android:layout_height="156dp"
+                android:background="@color/colorPrimary"
+                android:padding="36dp"
+                android:src="@android:drawable/ic_menu_edit"
+                android:tint="#FFFFFF" />
 
-        <TextView
-            android:id="@+id/lbl_item_sub_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/lbl_item_text"
-            android:layout_marginLeft="72dp"
-            android:layout_marginRight="48dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:text="Mononc' J"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/lbl_item_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_item_icon"
+                android:paddingLeft="16dp" />
 
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/lbl_item_sub_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/lbl_item_text"
+                android:paddingLeft="16dp"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+            <Button
+                android:id="@+id/btn_card_load"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_below="@+id/lbl_item_text"
+                android:background="@android:color/transparent"
+                android:textColor="@color/colorPrimary"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="LOAD" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

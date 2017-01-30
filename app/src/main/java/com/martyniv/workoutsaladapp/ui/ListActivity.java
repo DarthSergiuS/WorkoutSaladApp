@@ -1,123 +1,109 @@
 package com.martyniv.workoutsaladapp.ui;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.martyniv.workoutsaladapp.R;
-import com.martyniv.workoutsaladapp.adapter.CustomSpinnerAdapter;
-import com.martyniv.workoutsaladapp.adapter.WorkoutAdapter;
-import com.martyniv.workoutsaladapp.model.DBOpenHelper;
-import com.martyniv.workoutsaladapp.model.ListWorkout;
+import com.martyniv.workoutsaladapp.fragment.WorkoutListFragment;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+public class ListActivity extends AppCompatActivity  {
 
-public class ListActivity extends AppCompatActivity {
-
-    private RecyclerView rcView;
-    public WorkoutAdapter wokOutAdapter;
-    private DBOpenHelper dbOpenHelper = new DBOpenHelper(this);
-    private SQLiteDatabase db;
     private Toolbar toolbar;
-    public String s = "triceps";
-    public Context context;
-
-    private Spinner spinner_nav;
-
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    ViewPagerAdapter adapter;
+    private WorkoutListFragment workoutList ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        context = this;
-        db = dbOpenHelper.getWritableDatabase();
-        dbOpenHelper.onUpgrade(db, 2, 3);
-        ListWorkout workout = new ListWorkout("workout1", "Nothingness cannot be definedgfgf", "chest");
-        ListWorkout workout2 = new ListWorkout("workout2", "The softest thing cannot be snapped", "biceps");
-        ListWorkout workout3 = new ListWorkout("workout2", "The softest thing cannot be snapped", "biceps");
-        ListWorkout workout4 = new ListWorkout("workout2", "The softest thing cannot be snapped", "triceps");
 
-        dbOpenHelper.insertWorkout(workout);
-        dbOpenHelper.insertWorkout(workout2);
-        dbOpenHelper.insertWorkout(workout3);
-        dbOpenHelper.insertWorkout(workout4);
-        db.close();
-        rcView = (RecyclerView) findViewById(R.id.rec_list);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        spinner_nav = (Spinner) findViewById(R.id.spinner_nav);
-        rcView.setLayoutManager(new LinearLayoutManager(this));
-
-        addItemsToSpinner();
-
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.workoutsalad);
+        toolbar.setTitleTextColor(Color.WHITE);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        setFab();
 
     }
 
-    public void addItemsToSpinner() {
+    private void setupViewPager(ViewPager viewPager) {
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(workoutList= new WorkoutListFragment(), "Workout List");
+        adapter.addFragment(workoutList= new WorkoutListFragment(), "Week List");
 
-        db = dbOpenHelper.getReadableDatabase();
-        Set<String> set = dbOpenHelper.getAllBodyParts();
-        List<String> list = new ArrayList<>();
+        viewPager.setAdapter(adapter);
+    }
 
-        for (String aSet : set) {
-            list.add(aSet);
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
         }
 
-        // Custom ArrayAdapter with spinner item layout to set popup background
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
 
-        /*CustomSpinnerAdapter spinAdapter = new CustomSpinnerAdapter(
-                getApplicationContext(), list);*/
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
 
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
 
-        // Default ArrayAdapter with default spinner item layout, getting some
-        // view rendering problem in lollypop device, need to test in other
-        // devices
-
-        ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, list);
-        spinAdapter.setDropDownViewResource
-                (android.R.layout.simple_spinner_dropdown_item);
-
-
-        spinner_nav.setAdapter(spinAdapter);
-        spinner_nav.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapter, View v,
-                                       int position, long id) {
-                // On selecting a spinner item
-                s = adapter.getItemAtPosition(position).toString();
-
-                // Showing selected spinner item
-                Toast.makeText(getApplicationContext(), "Selected  : " + s,
-                        Toast.LENGTH_LONG).show();
-                wokOutAdapter = new WorkoutAdapter(dbOpenHelper.getWorkoutDataByBodyPart(s), context);
-
-                rcView.setAdapter(wokOutAdapter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 
+    private void setFab(){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                if(adapter.getPageTitle(tabLayout.getSelectedTabPosition())=="Week List"){
+                    Toast.makeText(getApplicationContext(),"hello",Toast.LENGTH_LONG).show();
+                }else{
+                    Intent intent = new Intent(getApplicationContext(),DetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("ID", -1);
+                    bundle.putString("Title", null);
+                    bundle.putString("Text", null);
+                    bundle.putString("Type",workoutList.getCurrentBodyType());
+                    intent.putExtra("bundleExtras", bundle);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
 }
+
+
+
+

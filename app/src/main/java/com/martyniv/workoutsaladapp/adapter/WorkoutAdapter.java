@@ -1,17 +1,17 @@
 package com.martyniv.workoutsaladapp.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.martyniv.workoutsaladapp.R;
-import com.martyniv.workoutsaladapp.model.ListWorkout;
+import com.martyniv.workoutsaladapp.model.WorkoutItem;
 
 import java.util.List;
 
@@ -19,11 +19,21 @@ import java.util.List;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutHolder> {
 
-    private List<ListWorkout> data;
+    private List<WorkoutItem> data;
     private LayoutInflater inflater;
 
+    private ItemClickCallBack itemClickCallBack;
 
-    public WorkoutAdapter(List<ListWorkout> data, Context c){
+    public interface ItemClickCallBack{
+        void onItemClick(int p);
+        void onButtonClick(int p);
+    }
+
+    public void setItemClickCallBack(final ItemClickCallBack itemClickCallBack){
+        this.itemClickCallBack = itemClickCallBack;
+    }
+
+    public WorkoutAdapter(List<WorkoutItem> data, Context c){
         this.inflater =LayoutInflater.from(c);
         this.data = data;
 
@@ -37,7 +47,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
 
     @Override
     public void onBindViewHolder(WorkoutHolder holder, int position) {
-        ListWorkout item =data.get(position);
+        WorkoutItem item =data.get(position);
         switch (item.getType()){
             case "chest":holder.cardView.setBackgroundResource(R.color.chest);
                 break;
@@ -59,15 +69,16 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
         return data.size();
     }
 
-    class WorkoutHolder extends RecyclerView.ViewHolder{
+    class WorkoutHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView title;
         private TextView subTitle;
         private ImageView icon;
         private CardView cardView;
+        private Button load;
         private View container;
 
-        public WorkoutHolder(View itemView) {
+        WorkoutHolder(View itemView) {
             super(itemView);
 
             title = (TextView)itemView.findViewById(R.id.lbl_item_text);
@@ -75,9 +86,19 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
             icon = (ImageView)itemView.findViewById(R.id.img_item_icon);
             cardView = (CardView)itemView.findViewById(R.id.card_view);
             container = itemView.findViewById(R.id.cont_item_root);
+            container.setOnClickListener(this);
         }
 
 
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.cont_item_root :
+                    itemClickCallBack.onItemClick(getAdapterPosition());
+                    break;
+
+            }
+        }
     }
 
 }

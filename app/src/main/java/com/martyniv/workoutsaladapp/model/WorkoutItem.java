@@ -1,8 +1,9 @@
 package com.martyniv.workoutsaladapp.model;
 
 
-public class ListWorkout {
+public class WorkoutItem {
 
+    private int id;
     private String itemTitle;
     private int imageResId;
     private String text;
@@ -11,11 +12,26 @@ public class ListWorkout {
 
 
 
-    public ListWorkout(String itemTitle, String text, String type) {
+    public WorkoutItem(int id, String itemTitle, String text, String type) {
+        this.id = id;
         this.itemTitle = itemTitle;
         this.text = text;
         this.type = type;
 
+    }
+    public WorkoutItem(String itemTitle, String text, String type) {
+        this.itemTitle = itemTitle;
+        this.text = text;
+        this.type = type;
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getImageResId() {

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -106,7 +105,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertWorkout(ListWorkout workout) {
+    public void insertWorkout(WorkoutItem workout) {
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(WORKOUT_NAME, workout.getItemTitle());
@@ -118,14 +117,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     }
 
-    public List<ListWorkout> getAllWorkoutData() {
+    public List<WorkoutItem> getAllWorkoutData() {
         db = this.getReadableDatabase();
 
-        List<ListWorkout> workoutList = new ArrayList<>();
+        List<WorkoutItem> workoutList = new ArrayList<>();
         Cursor cursor = db.query(TABLE_WORKOUT, null, null, null, null, null, null);
         try {
             while (cursor.moveToNext()) {
-                workoutList.add(new ListWorkout(cursor.getString(1), cursor.getString(2),
+                workoutList.add(new WorkoutItem(cursor.getInt(0),cursor.getString(1), cursor.getString(2),
                         cursor.getString(3)));
             }
         } finally {
@@ -137,17 +136,17 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         return workoutList;
     }
 
-    public List<ListWorkout> getWorkoutDataByBodyPart(String part) {
+    public List<WorkoutItem> getWorkoutDataByBodyPart(String part) {
         db = this.getReadableDatabase();
 
-        List<ListWorkout> workoutList = new ArrayList<>();
+        List<WorkoutItem> workoutList = new ArrayList<>();
         try {
-        Cursor cursor = db.query(TABLE_WORKOUT, new String[]{WORKOUT_NAME, WORKOUT_TEXT, WORKOUT_PART},
+        Cursor cursor = db.query(TABLE_WORKOUT, new String[]{WORKOUT_ID,WORKOUT_NAME, WORKOUT_TEXT, WORKOUT_PART},
                 WORKOUT_PART + "=?", new String[]{part}, null, null, null);
 
             while (cursor.moveToNext()) {
-                workoutList.add(new ListWorkout(cursor.getString(0), cursor.getString(1),
-                        cursor.getString(2)));
+                workoutList.add(new WorkoutItem(cursor.getInt(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3)));
 
             }
             cursor.close();
